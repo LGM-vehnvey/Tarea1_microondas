@@ -27,6 +27,7 @@
 \usepackage{helvet}        % Selecting font family
 \usepackage{ragged2e}      % For text alignment
 \usepackage{adjustbox}       % For defining new environments
+\usetikzlibrary{intersections}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Other Settings
@@ -80,14 +81,31 @@
         \lipsum[1]
         \begin{adjustbox}{width=\textwidth}
             \begin{tikzpicture}
-                \begin{axis}
+                \begin{axis}[
+                    legend entries={$\alpha_{\text{c}}$, $\alpha_{\text{d}}$},
+                    legend pos=north west,
+                    xlabel={Frecuencia (GHz)},
+                    ylabel={Atenuación ($\frac{\text{Np}}{\text{m}}$)},
+                    %grid=major,
+                    %grid style={dashed,gray!30},
+                    %xtick={0, 5, 10, 15, 20, 25, 30, 35, 40},
+                    %ytick={0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2},
+                    axis lines=left,]
                     \addplot+[
-                        only marks,   % Plotting only marks
-                        scatter,    % Plotting scatter plot
-                        mark size=3pt,  % Setting mark size
+                        deepBlue,
+                        mark size=0.2pt,  % Setting mark size
                     ]
-                    table[meta=alpha]
-                    {data/Gamma30GHz.txt};   % Reading data from dataFile.txt
+                    table[x index=0, y index=1]
+                    {data/processed_data.txt};   % Reading data from dataFile.txt
+                    %\addlegendentry{$\alpha_{\text{c}}$}
+                    \addplot+[
+                        red,
+                        mark size=0.2pt,  % Setting mark size
+                    ]
+                    table[x index=0, y index=2]
+                    {data/processed_data.txt}
+                    node[right, pos=0.85, black] {$f_\theta$};   % Adding a node
+                    \draw[dashed, black] (274.2, 0) -- (274.2, 160);
                 \end{axis}
             \end{tikzpicture}
         \end{adjustbox}
