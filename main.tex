@@ -12,29 +12,34 @@
 \usepackage{mdframed}
 \usepackage{booktabs}
 \usepackage{lipsum}
-\usepackage{graphicx}
 \usepackage{color}
 \usepackage{psfrag}
 \usepackage{pgfplots}   % For plotting beautiful graphs
 \usepackage{bm}
-\usepackage[english]{babel}
+\usepackage[spanish]{babel}
 \usepackage{biblatex} 
 \usepackage{csquotes} 
 \usepackage{setspace}
 \usepackage{multicol}  
-\usepackage[skip=1em plus 2pt, indent=30pt]{parskip}    % Setting space between paragraphs and indent
+\usepackage[skip=3pt plus 1pt, indent=30pt]{parskip}    % Setting space between paragraphs and indent
 \usepackage[T1]{fontenc}    % Output font encoding for international characters
 \usepackage{helvet}        % Selecting font family
 \usepackage{ragged2e}      % For text alignment
 \usepackage{adjustbox}       % For defining new environments
+\usepackage{fancyhdr}       % For defining headers and footers
+\usepackage[cochineal]{newtxmath}
+\usepackage{caption}
 \usetikzlibrary{intersections}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{decorations.pathreplacing}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Other Settings
+\newcommand*{\freq}{\mathord{\mathit{f}}}
 %\let\cleardoublepage=\clearpage
 %\renewcommand{\baselinestretch}{1.5}
 %%%%%%%%%%%%%%%%%%%%%%%%%% Page Setting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\geometry{a4paper, textwidth=19cm, top=1cm, bottom=1cm}  % Setting page size
+\geometry{a4paper, textwidth=19cm, textheight=28.5cm, top=0.1cm, headheight=0.1cm}  % Setting page size
 \graphicspath{{images/}}    % Setting path for images
 \addbibresource{bibliography.bib}   % Setting path for bibliography
 %%%%%%%%%%%%%%%%%%%%%%%%%% Define some useful colors %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,18 +72,81 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Title & Author %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{Design of a time-to-digital converter to be used as a phase detector in a PLL in 65 nm technology}
+\title{Caracterización de la atenuación y la permitividad en líneas de transmisión}
 \author{Luis Guillermo Macias Rojas}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Header & Footer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}  % Setting page style
+\fancyhf{}
+\fancyhead[L]{\text{Luis Guillermo Macias Rojas}}  % Setting header
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
     \maketitle
 
     \fontfamily{phv}\selectfont % Selecting font family
-    \noindent\lipsum[1]  % Dummy text
-
+    \noindent
+    \textbf{Resumen:} En este trabajo se presenta la metodología y resultados obtenidos en la caracterización de la atenuación 
+    ($\alpha$) y la permitividad relativa ($\epsilon_{\text{r'}}$) en líneas de transmisión a partir de datos experimentales
+    obtenidos en el laboratorio. Para la extracción de las componentes de disipación ($\alpha_{\text{c}}$, $\alpha_{\text{d}}$) 
+    y dispersión ($\beta{\text{c}}$, $\beta{\text{d}}$) se realizó una regresión lineal considerando un modelo donde el conductor se 
+    supone liso y la línea de transmisión de bajas pérdidas. Los resultados obtenidos muestran una frecuencia de \textit{cross-over} 
+    $\freq_{\theta}$ = 27.42 GHz y una permitividad relativa $\epsilon_{\text{r'}}$ que se satura alrededor de 1.87.
     \noindent\begin{minipage}{0.49\textwidth}   %uses 60% of the page
-        \lipsum[1]
+        {\centering\section*{\large Introducción}}
+
+        La disipación ($\alpha$) y la dispersión ($\beta$) en líneas de transmisión son fenómenos que se presentan
+        en la propagación de ondas electromagnéticas a través de un medio conductor. Este trabajo describe la extracción de estos 
+        parámetros fundamentales en la caracterización de líneas de transmisión.
+        
+        {\centering\section*{\large Metodología}}
+
+        La extracción de $\alpha_{\text{c}}$, $\alpha_{\text{d}}$, $\beta_{\text{c}}$ y $\beta_{\text{d}}$ parte de un modelo para 
+        líneas de transmisión de bajas pérdidas que puede ser descrito por las ecuaciones \eqref{eq:alpha_model} y \eqref{eq:beta_model}.
+
+        \begin{equation}
+            \alpha = \underbrace{\frac{K_s \sqrt{\freq}}{2 Z(s)_{\mathbb{R}}}}_{\alpha_c} + \underbrace{\frac{G}{2} Z(s)_{\mathbb{R}}}_{\alpha_d}
+            \label{eq:alpha_model}
+        \end{equation}
+
+        \begin{equation}
+            \beta = \underbrace{\frac{K_s \sqrt{\freq}}{2 Z(s)_{\mathbb{R}}}}_{\beta_c} + \underbrace{\frac{\omega}{\nu_p}}_{\beta_d}
+            \qquad \beta_d = \frac{\omega \sqrt{\epsilon_{r'}}}{c}
+            \label{eq:beta_model}
+        \end{equation}
+
+        Nótese que $\alpha_{\text{c}}$ y $\beta_{\text{c}}$ son iguales debido a que el conductor se considera liso.
+
+        Debido a que todos los parámetros excepto $\freq$ son constantes pueden ser agrupados en una sola constante
+        (A$_{\alpha}$, B$_{\alpha}$, A$_{\beta}$ y B$_{\beta}$) para simplificar términos, si además se reordenan \eqref{eq:alpha_model} 
+        y \eqref{eq:beta_model} conforme a la ecuación de la recta (y = mx + b) pueden reescribirse como \eqref{eq:alpha_coeff} y 
+        \eqref{eq:beta_coeff} respectivamente. 
+
+        \begin{equation}
+            \underbrace{\frac{\alpha}{\sqrt{\freq}}}_{y} = \underbrace{A_{\alpha}}_{b} + \underbrace{B_{\alpha} \sqrt{\freq}}_{mx}
+            \label{eq:alpha_coeff}
+        \end{equation}
+
+        \begin{equation}
+            \underbrace{\frac{\beta}{\sqrt{\freq}}}_{y} = \underbrace{A_{\beta}}_{b} + \underbrace{B_{\beta} \sqrt{\freq}}_{mx}
+            \label{eq:beta_coeff}
+        \end{equation}
+
+        Posteriormente se pueden hallar los coeficientes de \eqref{eq:alpha_coeff} y \eqref{eq:beta_coeff} mediante una regresión
+        lineal y de esa manera obtener las componentes del dieléctrico y del conductor.
+
+        Conociendo los coeficientes de dispersión se puede hallar la permitividad relativa ($\epsilon_{r'}$) despejándola de la ecuación 
+        \eqref{eq:beta_model} tal como se muestra en \eqref{eq:permittivity}.
+
+        \begin{equation}
+            \epsilon_{r'} = \left[ c \left(\frac{\beta - A_{\beta} \sqrt{\freq}}{\omega} \right) \right]^2
+            \label{eq:permittivity}
+        \end{equation}
+
+    \end{minipage}
+    \hspace{0.38 cm}
+    \begin{minipage}{0.49\textwidth}   %uses 40% of the page
         \begin{adjustbox}{width=\textwidth}
             \begin{tikzpicture}
                 \begin{axis}[
@@ -96,23 +164,59 @@
                         mark size=0.2pt,  % Setting mark size
                     ]
                     table[x index=0, y index=1]
-                    {data/processed_data.txt};   % Reading data from dataFile.txt
-                    %\addlegendentry{$\alpha_{\text{c}}$}
+                    {data/processed_data.txt}   % Reading data from dataFile.txt
+                    node[left, pos=0.9, black] {$f_\theta$};   % Adding a node
                     \addplot+[
                         red,
                         mark size=0.2pt,  % Setting mark size
                     ]
                     table[x index=0, y index=2]
-                    {data/processed_data.txt}
-                    node[right, pos=0.85, black] {$f_\theta$};   % Adding a node
+                    {data/processed_data.txt};
                     \draw[dashed, black] (274.2, 0) -- (274.2, 160);
                 \end{axis}
             \end{tikzpicture}
         \end{adjustbox}
-    \end{minipage}
-    \hspace{0.38 cm}
-    \begin{minipage}{0.49\textwidth}   %uses 40% of the page
-        \lipsum[1-3]
+        \captionof{figure}{Disipación en función de la frecuencia.}    % Caption of the figure outside of float enviroment
+        \label{fig:atenuacion}
+
+        {\centering\section*{\large Resultados}}
+
+        La figura \ref{fig:atenuacion} muestra las componentes de disipación ($\alpha_{\text{c}}$, $\alpha_{\text{d}}$) en función de la
+        frecuencia. Se observa que la frecuencia de \textit{cross-over} $\freq_{\theta}$ es de 27.42 GHz. La figura \ref{fig:permitividad} muestra la permitividad relativa ($\epsilon_{\text{r'}}$) en función de la frecuencia.
+        Se observa que a partir de 6 GHz comienza a saturarse en un valor cercano a 1.87 (semejante al valor constante que se habría obtenido
+        erróneamente si no se hubiera considerado la componente de dispersión del conductor $\beta_c$).
+
+        \begin{adjustbox}{width=\textwidth}
+            \begin{tikzpicture}
+                \begin{axis}[
+                    legend entries={$\epsilon_{\text{r'}}$ correcta, $\epsilon_{\text{r'}}$ errónea},
+                    legend pos=north west,
+                    xlabel={Frecuencia (GHz)},
+                    ylabel={$\epsilon_{\text{r'}}$},
+                    %grid=major,
+                    %grid style={dashed,gray!30},
+                    %xtick={0, 5, 10, 15, 20, 25, 30, 35, 40},
+                    %ytick={0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2},
+                    axis lines=left,]
+                    \addplot+[
+                        deepBlue,
+                        mark size=0.2pt,  % Setting mark size
+                    ]
+                    table[x index=0, y index=3]
+                    {data/processed_data.txt};   % Reading data from dataFile.txt
+                    %\addlegendentry{$\alpha_{\text{c}}$}
+                    \addplot+[
+                        orange,
+                        mark size=0.2pt,  % Setting mark size
+                    ]
+                    table[x index=0, y index=4]
+                    {data/processed_data.txt};
+                \end{axis}
+            \end{tikzpicture}
+        \end{adjustbox}
+        \captionof{figure}{Permitividad relativa en función de la frecuencia.}    % Caption of the figure outside of float enviroment
+        \label{fig:permitividad}
+
     \end{minipage}
     %\printbibliography  % Print bibliography
 \end{document}
